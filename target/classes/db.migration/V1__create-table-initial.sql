@@ -7,20 +7,44 @@ CREATE TABLE tbl_alunos
     cpf VARCHAR(14) UNIQUE NOT NULL,
     email VARCHAR(255) NOT NULL,
     formacao VARCHAR(255) NOT NULL,
-    modulo_feito VARCHAR(255) NOT NULL,
-    nivel VARCHAR(255) NOT NULL
+    profissao VARCHAR(255) NOT NULL,
+    modulo_feito ENUM('nenhum', 'beginners_1', 'beginners_2', 'elementary_1', 'elementary_2', 'pre_intermediate_1', 'pre_intermediate_2', 'pre_intermediate_plus_1', 'pre_intermediate_plus_2', 'intermediate_1', 'intermediate_2', 'pre_advanced_1', 'pre_advanced_2', 'advanced_1', 'advanced_2', 'advanced_plus_1', 'advanced_plus_2') NOT NULL,
+    nivel ENUM('nenhum', 'beginners_1', 'beginners_2', 'elementary_1', 'elementary_2', 'pre_intermediate_1', 'pre_intermediate_2', 'pre_intermediate_plus_1', 'pre_intermediate_plus_2', 'intermediate_1', 'intermediate_2', 'pre_advanced_1', 'pre_advanced_2', 'advanced_1', 'advanced_2', 'advanced_plus_1', 'advanced_plus_2') NOT NULL,
+    id_professor INT,
+    nome_professor VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_professor) REFERENCES tbl_profs(id_professor),
+    FOREIGN KEY (nome_professor) REFERENCES tbl_profs(nome_professor)
 );
 
-# CREATE TABLE tbl_profs
-# (
-#     id_profs   INT PRIMARY KEY AUTO_INCREMENT,
-#     nome_profs VARCHAR(255) NOT NULL,
-#     email     VARCHAR(40)  NOT NULL,
-#     login     VARCHAR(40)  NOT NULL UNIQUE,
-#     password  VARCHAR(13)  NOT NULL,
-#     whatsapp  VARCHAR(13)  NOT NULL,
-#     roles     VARCHAR(10)  NOT NULL CHECK (roles IN ('ADMIN', 'PROF'))
-# );
+
+CREATE TABLE tbl_profs
+(
+    id_professor   INT PRIMARY KEY AUTO_INCREMENT,
+    nome_professor VARCHAR(255) NOT NULL,
+    cpfCnpj varchar(40) not null UNIQUE,
+    id_endereco CHAR(36) NOT NULL,
+    email     VARCHAR(40)  NOT NULL,
+    login     VARCHAR(40)  NOT NULL UNIQUE,
+    password  VARCHAR(20)  NOT NULL,
+    whatsapp  VARCHAR(13)  NOT NULL,
+    roles     VARCHAR(10)  NOT NULL CHECK (roles IN ('ADMIN', 'PROF'))
+);
+
+# Adição de professores. Tirar quando for subir o DB
+INSERT INTO tbl_profs (nome_professor, cpfCnpj, id_endereco, email, login, password, whatsapp, roles)
+VALUES
+    ('João Silva', '123.456.789-00', '1d2d3d4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 'joao.silva@example.com', 'joao123', 'senha1234', '11987654321', 'ADMIN'),
+
+    ('Maria Oliveira', '987.654.321-00', '2d3e4f5g-6h7i-8j9k-0l1m-2n3o4p5q6r7s', 'maria.oliveira@example.com', 'maria456', 'senha5678', '21987654321', 'PROF'),
+
+    ('Carlos Pereira', '111.222.333-44', '3e4f5g6h-7i8j-9k0l-1m2n-3o4p5q6r7s8t', 'carlos.pereira@example.com', 'carlos789', 'senha9012', '31987654321', 'PROF'),
+
+    ('Ana Costa', '555.666.777-88', '4f5g6h7i-8j9k-0l1m-2n3o-4p5q6r7s8t9u', 'ana.costa@example.com', 'ana321', 'senha3456', '41987654321', 'ADMIN'),
+
+    ('Roberto Almeida', '999.000.111-22', '5g6h7i8j-9k0l-1m2n-3o4p-5q6r7s8t9u0v', 'roberto.almeida@example.com', 'roberto654', 'senha7890', '51987654321', 'PROF');
+
+
+
 #
 # CREATE TABLE tbl_semana
 # (

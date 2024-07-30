@@ -32,8 +32,7 @@ public class Endereco {
     @Column(name = "cep")
     private String cep;
 
-    public Endereco(Integer idEndereco, String logradouro, String numero, String complemento, String bairro, String cidade, String estado, String cep) {
-        this.idEndereco = idEndereco;
+    public Endereco( String logradouro, String numero, String complemento, String bairro, String cidade, String estado, String cep) {
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;

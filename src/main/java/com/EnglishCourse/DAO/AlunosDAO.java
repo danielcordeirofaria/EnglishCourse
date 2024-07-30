@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AlunosDAO extends CrudRepository<Alunos, Integer> {
 
+    boolean existsByCpf(String cpf);
 }

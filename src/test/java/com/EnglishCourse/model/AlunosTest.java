@@ -29,9 +29,10 @@ public class AlunosTest {
         aluno.setCpf("123.456.789-00");
         aluno.setEmail("joao@example.com");
         aluno.setFormacao("Engenharia");
+        aluno.setProfissao("Engenheiro");
+        aluno.setModuloMatriculado("Intermediário");
         aluno.setModuloFeito("Básico");
         aluno.setNivel("Intermediário");
-        aluno.setIdPacote(1);
 
         // Verifica se os valores definidos estão corretos
         assertEquals(1, aluno.getIdAlunoMatricula());
@@ -41,9 +42,10 @@ public class AlunosTest {
         assertEquals("123.456.789-00", aluno.getCpf());
         assertEquals("joao@example.com", aluno.getEmail());
         assertEquals("Engenharia", aluno.getFormacao());
+        assertEquals("Engenheiro", aluno.getProfissao());
+        assertEquals("Intermediário", aluno.getModuloMatriculado());
         assertEquals("Básico", aluno.getModuloFeito());
         assertEquals("Intermediário", aluno.getNivel());
-        assertEquals(1, aluno.getIdPacote());
 
         // Verifica se os valores do Endereco estão corretos
         assertEquals(1, aluno.getEndereco().getIdEndereco());

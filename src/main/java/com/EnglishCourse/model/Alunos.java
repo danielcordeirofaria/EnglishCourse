@@ -1,7 +1,6 @@
 package com.EnglishCourse.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
@@ -32,17 +31,37 @@ public class Alunos {
     @Column(name = "formacao", length = 255, nullable = false)
     private String formacao;
 
-    @Column(name = "modulo_feito", length = 255, nullable = false)
-    private String moduloFeito;
+    @Column(name = "profissao", length = 255, nullable = false)
+    private String profissao;
 
-    @Column(name = "nivel", length = 255, nullable = false)
-    private String nivel;
+    @Column(name = "modulo_feito", length = 24, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NivelEnum moduloFeito;
 
-    @Column(name = "id_pacote")
-    private int idPacote;
+    @Column(name = "nivel", length = 24, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NivelEnum nivel;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
+    private Professor professor;
 
     public Alunos() {}
 
+    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Professor professor) {
+        this.nome = nome;
+        this.endereco = endereco;
+        this.dataDeNascimento = dataDeNascimento;
+        this.cpf = cpf;
+        this.email = email;
+        this.formacao = formacao;
+        this.profissao = profissao;
+        this.moduloFeito = moduloFeito;
+        this.nivel = nivel;
+        this.professor = professor;
+    }
+
+    // Getters e setters
     public int getIdAlunoMatricula() {
         return idAlunoMatricula;
     }
@@ -99,27 +118,35 @@ public class Alunos {
         this.formacao = formacao;
     }
 
-    public String getModuloFeito() {
+    public String getProfissao() {
+        return profissao;
+    }
+
+    public void setProfissao(String profissao) {
+        this.profissao = profissao;
+    }
+
+    public NivelEnum getModuloFeito() {
         return moduloFeito;
     }
 
-    public void setModuloFeito(String moduloFeito) {
+    public void setModuloFeito(NivelEnum moduloFeito) {
         this.moduloFeito = moduloFeito;
     }
 
-    public String getNivel() {
+    public NivelEnum getNivel() {
         return nivel;
     }
 
-    public void setNivel(String nivel) {
+    public void setNivel(NivelEnum nivel) {
         this.nivel = nivel;
     }
 
-    public int getIdPacote() {
-        return idPacote;
+    public Professor getProfessor() {
+        return professor;
     }
 
-    public void setIdPacote(int idPacote) {
-        this.idPacote = idPacote;
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 }
