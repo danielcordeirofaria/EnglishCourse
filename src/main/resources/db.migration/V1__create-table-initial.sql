@@ -12,6 +12,7 @@ CREATE TABLE tbl_alunos
     nivel ENUM('nenhum', 'beginners_1', 'beginners_2', 'elementary_1', 'elementary_2', 'pre_intermediate_1', 'pre_intermediate_2', 'pre_intermediate_plus_1', 'pre_intermediate_plus_2', 'intermediate_1', 'intermediate_2', 'pre_advanced_1', 'pre_advanced_2', 'advanced_1', 'advanced_2', 'advanced_plus_1', 'advanced_plus_2') NOT NULL,
     id_professor INT,
     nome_professor VARCHAR(255) NOT NULL,
+    status ENUM('ATIVADO', 'DESATIVADO') NOT NULL ,
     FOREIGN KEY (id_professor) REFERENCES tbl_profs(id_professor),
     FOREIGN KEY (nome_professor) REFERENCES tbl_profs(nome_professor)
 );
@@ -27,7 +28,8 @@ CREATE TABLE tbl_profs
     login     VARCHAR(40)  NOT NULL UNIQUE,
     password  VARCHAR(20)  NOT NULL,
     whatsapp  VARCHAR(13)  NOT NULL,
-    roles     VARCHAR(10)  NOT NULL CHECK (roles IN ('ADMIN', 'PROF'))
+    roles     VARCHAR(10)  NOT NULL CHECK (roles IN ('ADMIN', 'PROF')),
+
 );
 
 # Adição de professores. Tirar quando for subir o DB

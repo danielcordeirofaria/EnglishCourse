@@ -15,4 +15,5 @@ public interface IAlunosService {
 
     ResponseEntity<?> deletarAluno(int idAlunos);
 
+    ResponseEntity<?> atualizarStatusAluno(int idAlunoMatricula, Alunos aluno);
 }

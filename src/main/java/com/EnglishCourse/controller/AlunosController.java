@@ -32,6 +32,27 @@ public class AlunosController {
         }
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<?> cadastrarVariosAlunos(@RequestBody List<Alunos> alunos) {
+        try {
+            List<ResponseEntity<?>> respostas = alunos.stream()
+                    .map(iAlunosService::salvarAluno)
+                    .collect(Collectors.toList());
+
+            boolean hasErrors = respostas.stream().anyMatch(resposta -> !resposta.getStatusCode().is2xxSuccessful());
+
+            if (hasErrors) {
+                return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(respostas);
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(respostas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar os alunos."));
+        }
+    }
+
+
 
     @GetMapping
     public ResponseEntity<ArrayList<Alunos>> listarAlunos() {
@@ -64,6 +85,20 @@ public class AlunosController {
         }
     }
 
+    @PutMapping("/inutilizandoAluno/{idAlunoMatricula}")
+    public ResponseEntity<?> desativarAluno(@PathVariable("idAlunoMatricula") int idAlunoMatricula, @RequestBody Alunos aluno) {
+        try {
+            ResponseEntity<?> resposta = iAlunosService.atualizarStatusAluno(idAlunoMatricula, aluno);
+            if (resposta.getBody() != null) {
+                return resposta;
+            } else {
+                return ResponseEntity.status(resposta.getStatusCode()).body(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
     @DeleteMapping("/{idAlunoMatricula}")

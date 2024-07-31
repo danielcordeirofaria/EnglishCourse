@@ -44,11 +44,16 @@ public class Alunos {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
-    private Professor professor;
+    private Professor idProfessor;
+
+    @Column(name = "status", length = 10, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
+
 
     public Alunos() {}
 
-    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Professor professor) {
+    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Professor idProfessor) {
         this.nome = nome;
         this.endereco = endereco;
         this.dataDeNascimento = dataDeNascimento;
@@ -58,7 +63,7 @@ public class Alunos {
         this.profissao = profissao;
         this.moduloFeito = moduloFeito;
         this.nivel = nivel;
-        this.professor = professor;
+        this.idProfessor = idProfessor;
     }
 
     // Getters e setters
@@ -143,10 +148,18 @@ public class Alunos {
     }
 
     public Professor getProfessor() {
-        return professor;
+        return idProfessor;
     }
 
     public void setProfessor(Professor professor) {
-        this.professor = professor;
+        this.idProfessor = professor;
+    }
+
+    public StatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusEnum status) {
+        this.status = status;
     }
 }

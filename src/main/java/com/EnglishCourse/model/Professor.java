@@ -34,7 +34,10 @@ public class Professor {
     @Column(name = "whatsapp", length = 13, nullable = false)
     private String whatsapp;
 
-    public Professor(int idProfessor, String nomeProfessor, String cpfCnpj, Endereco endereco, String email, String login, String password, String whatsapp) {
+    @Column(name = "roles")
+    private RolesEnum roles;
+
+    public Professor(int idProfessor, String nomeProfessor, String cpfCnpj, Endereco endereco, String email, String login, String password, String whatsapp, RolesEnum roles) {
         this.idProfessor = idProfessor;
         this.nomeProfessor = nomeProfessor;
         this.cpfCnpj = cpfCnpj;
@@ -43,6 +46,7 @@ public class Professor {
         this.login = login;
         this.password = password;
         this.whatsapp = whatsapp;
+        this.roles = roles;
     }
 
     public Professor() {
@@ -112,4 +116,9 @@ public class Professor {
     public void setWhatsapp(String whatsapp) {
         this.whatsapp = whatsapp;
     }
+
+    public RolesEnum getRoles() { return roles; }
+
+    public void setRoles(RolesEnum roles) { this.roles = roles; }
+
 }

@@ -109,6 +109,51 @@ public class ProfessorServiceImpl implements IProfessorService{
         return null;
     }
 
+    @Override
+    public Professor buscarProfessor(int idProfessor) {
+        try {
+            return professorDAO.findById(idProfessor).orElse(null);
+        } catch (Exception e) {
+            logger.error("Ocorreu um erro ao buscar o professor.", e);
+            return null;
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> atualizarProfessor(int idProfessor, Professor professor) {
+            try {
+                logger.info("Tentando atualizar aluno com idProfessor: {}", idProfessor);
+
+                Professor professorExistente = professorDAO.findById(idProfessor).orElse(null);
+                if (professorExistente != null) {
+                    logger.info("Aluno encontrado: {}", professorExistente);
+
+                    updateProfessor(professorExistente, professor);
+                    Professor professorAtualizado = professorDAO.save(professorExistente);
+
+                    logger.info("Aluno atualizado com sucesso: {}", professorAtualizado);
+                    return ResponseEntity.ok(professorAtualizado);
+                } else {
+                    logger.error("Aluno não encontrado para atualização.");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
+            } catch (Exception e) {
+                logger.error("Ocorreu um erro ao atualizar o aluno.", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        }
+
+    private void updateProfessor(Professor professorExistente, Professor professorNovo) {
+        professorExistente.setNomeProfessor(professorNovo.getNomeProfessor());
+        professorExistente.setCpfCnpj(professorNovo.getCpfCnpj());
+        professorExistente.setEndereco(professorNovo.getEndereco());
+        professorExistente.setEmail(professorNovo.getEmail());
+        professorExistente.setLogin(professorNovo.getLogin());
+        professorExistente.setPassword(professorNovo.getPassword());
+        professorExistente.setWhatsapp(professorNovo.getWhatsapp());
+        professorExistente.setRoles(professorNovo.getRoles());
+
+    }
 
 }
 

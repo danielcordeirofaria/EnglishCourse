@@ -180,6 +180,31 @@ public class AlunosServiceImpl implements IAlunosService {
         alunoExistente.setFormacao(alunoNovo.getFormacao());
         alunoExistente.setModuloFeito(alunoNovo.getModuloFeito());
         alunoExistente.setNivel(alunoNovo.getNivel());
+        alunoExistente.setStatus(alunoNovo.getStatus());
+    }
+
+    @Override
+    public ResponseEntity<?> atualizarStatusAluno(int idAlunoMatricula, Alunos aluno) {
+        try {
+            logger.info("Tentando atualizar aluno com idMatricula: {}", idAlunoMatricula);
+
+            Alunos alunoExistente = alunosDAO.findById(idAlunoMatricula).orElse(null);
+            if (alunoExistente != null) {
+                logger.info("Aluno encontrado: {}", alunoExistente);
+
+                alunoExistente.setStatus(aluno.getStatus());
+                Alunos alunoAtualizado = alunosDAO.save(alunoExistente);
+
+                logger.info("Aluno atualizado com sucesso: {}", alunoAtualizado);
+                return ResponseEntity.ok(alunoAtualizado);
+            } else {
+                logger.error("Aluno não encontrado para atualização.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            logger.error("Ocorreu um erro ao atualizar o aluno.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @Override
@@ -200,4 +225,6 @@ public class AlunosServiceImpl implements IAlunosService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao excluir o aluno."));
         }
     }
+
+
 }
