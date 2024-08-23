@@ -3,9 +3,11 @@ package com.EnglishCourse.servicos;
 import com.EnglishCourse.DAO.AlunosDAO;
 import com.EnglishCourse.DAO.EnderecoDAO;
 import com.EnglishCourse.DAO.ProfessorDAO;
+import com.EnglishCourse.DAO.TurmaDAO;
 import com.EnglishCourse.model.Alunos;
 import com.EnglishCourse.model.Endereco;
 import com.EnglishCourse.model.Professor;
+import com.EnglishCourse.model.Turma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class AlunosServiceImpl implements IAlunosService {
@@ -27,7 +27,7 @@ public class AlunosServiceImpl implements IAlunosService {
     private EnderecoDAO enderecoDAO;
 
     @Autowired
-    private ProfessorDAO professorDAO;
+    private TurmaDAO turmaDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(AlunosServiceImpl.class);
 
@@ -107,21 +107,20 @@ public class AlunosServiceImpl implements IAlunosService {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Profissão do aluno é obrigatória."));
         }
 
-        Professor professor = aluno.getProfessor();
-        if (professor == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Professor não fornecido."));
+        Turma turma = aluno.getIdTurma();
+        if (turma == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma não fornecido."));
         }
 
-        int idProfessor = professor.getIdProfessor();
-        if (idProfessor <= 0) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "ID do professor não fornecido ou inválido."));
+        int idTurma = turma.getIdTurma();
+        if (idTurma <= 0) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "ID da turma não fornecido ou inválido."));
         }
 
         // Verificar se o professor com o ID fornecido existe
-        if (!professorDAO.existsByIdProfessor(idProfessor)) {
+        if (!turmaDAO.existsByIdTurma(idTurma)) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Professor com ID fornecido não encontrado."));
         }
-
         return null;
     }
 

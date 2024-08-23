@@ -6,5 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface ProfessorDAO extends CrudRepository<Professor, Integer> {
     boolean existsByIdProfessor(int IdProfessor);
 
-    boolean existsByCpfCnpj(String cpfCnpj);
+    boolean existsByCpf(String cpf);
+
 }

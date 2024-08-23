@@ -15,8 +15,8 @@ public class Professor {
     @Column(name = "nome_professor", length = 255, nullable = false)
     private String nomeProfessor;
 
-    @Column(name = "cpfCnpj", length = 40, nullable = false, unique = true)
-    private String cpfCnpj;
+    @Column(name = "cpf", length = 40, nullable = false, unique = true)
+    private String cpf;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_endereco", referencedColumnName = "id_endereco")
@@ -37,10 +37,10 @@ public class Professor {
     @Column(name = "roles")
     private RolesEnum roles;
 
-    public Professor(int idProfessor, String nomeProfessor, String cpfCnpj, Endereco endereco, String email, String login, String password, String whatsapp, RolesEnum roles) {
+    public Professor(int idProfessor, String nomeProfessor, String cpf, Endereco endereco, String email, String login, String password, String whatsapp, RolesEnum roles) {
         this.idProfessor = idProfessor;
         this.nomeProfessor = nomeProfessor;
-        this.cpfCnpj = cpfCnpj;
+        this.cpf = cpf;
         this.endereco = endereco;
         this.email = email;
         this.login = login;
@@ -69,12 +69,12 @@ public class Professor {
         this.nomeProfessor = nomeProfessor;
     }
 
-    public String getCpfCnpj() {
-        return cpfCnpj;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setCpfCnpj(String cpfCnpj) {
-        this.cpfCnpj = cpfCnpj;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public Endereco getEndereco() {

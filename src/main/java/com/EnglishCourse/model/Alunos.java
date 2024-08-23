@@ -42,18 +42,22 @@ public class Alunos {
     @Enumerated(EnumType.STRING)
     private NivelEnum nivel;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
-    private Professor idProfessor;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
+//    private Professor idProfessor;
 
     @Column(name = "status", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_turma", referencedColumnName = "id_turma", nullable = true)
+    private Turma idTurma;
+
 
     public Alunos() {}
 
-    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Professor idProfessor) {
+    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Turma idTurma) {
         this.nome = nome;
         this.endereco = endereco;
         this.dataDeNascimento = dataDeNascimento;
@@ -63,7 +67,7 @@ public class Alunos {
         this.profissao = profissao;
         this.moduloFeito = moduloFeito;
         this.nivel = nivel;
-        this.idProfessor = idProfessor;
+        this.idTurma = idTurma;
     }
 
     // Getters e setters
@@ -147,13 +151,9 @@ public class Alunos {
         this.nivel = nivel;
     }
 
-    public Professor getProfessor() {
-        return idProfessor;
-    }
+    public Turma getIdTurma() { return idTurma; }
 
-    public void setProfessor(Professor professor) {
-        this.idProfessor = professor;
-    }
+    public void setIdTurma(Turma idTurma) { this.idTurma = idTurma; }
 
     public StatusEnum getStatus() {
         return status;
