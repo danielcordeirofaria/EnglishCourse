@@ -52,12 +52,12 @@ public class Alunos {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_turma", referencedColumnName = "id_turma", nullable = true)
-    private Turma idTurma;
+    private Turma turma;
 
 
     public Alunos() {}
 
-    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Turma idTurma) {
+    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Turma turma) {
         this.nome = nome;
         this.endereco = endereco;
         this.dataDeNascimento = dataDeNascimento;
@@ -67,7 +67,7 @@ public class Alunos {
         this.profissao = profissao;
         this.moduloFeito = moduloFeito;
         this.nivel = nivel;
-        this.idTurma = idTurma;
+        this.turma = turma;
     }
 
     // Getters e setters
@@ -151,9 +151,9 @@ public class Alunos {
         this.nivel = nivel;
     }
 
-    public Turma getIdTurma() { return idTurma; }
+    public Turma getTurma() { return turma; }
 
-    public void setIdTurma(Turma idTurma) { this.idTurma = idTurma; }
+    public void setTurma(Turma idTurma) { this.turma = idTurma; }
 
     public StatusEnum getStatus() {
         return status;

@@ -1,7 +1,6 @@
 package com.EnglishCourse.controller;
 
-import com.EnglishCourse.model.Alunos;
-import com.EnglishCourse.model.Professor;
+import com.EnglishCourse.DTO.TurmaDTO;
 import com.EnglishCourse.model.Turma;
 import com.EnglishCourse.servicos.ITurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,40 +19,50 @@ public class TurmaController {
     private ITurmaService iTurmaService;
 
     @GetMapping
-    public ResponseEntity<List<Turma>> listarTurmas() {
+    public ResponseEntity<List<TurmaDTO>> listarTurmas() {
         try {
-            List<Turma> turmas = (List<Turma>) iTurmaService.recuperarTurma();
+            List<TurmaDTO> turmas = iTurmaService.recuperarTurmas();
             return ResponseEntity.ok(turmas);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(new Turma()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
 
-    @GetMapping("/idTurma")
-    public ResponseEntity<Turma> buscarTurma(@RequestParam("idTurma") int idTurma) {
-        Turma turmaRes = iTurmaService.findByIdTurma(idTurma);
-        if(idTurma <= 0){
-            return ResponseEntity.ok(turmaRes);
-        }else{
+
+    @GetMapping("/{idTurma}")
+    public ResponseEntity<TurmaDTO> buscarTurma(@PathVariable("idTurma") int idTurma) {
+        TurmaDTO turma = iTurmaService.retornarTurmaPorId(idTurma);
+        if (turma != null) {
+            return ResponseEntity.ok(turma);
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
 
-
     @PostMapping
     public ResponseEntity<?> cadastrarTurma(@RequestBody Turma turma) {
         try {
-            ResponseEntity<?> resposta = iTurmaService.salvarTurma(turma);
-
-            return resposta; // Retorna a resposta do serviço diretamente
+            // Use a resposta do serviço diretamente
+            return iTurmaService.salvarTurma(turma);
         } catch (Exception e) {
-            // Log da exceção para fins de depuração
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar a turma."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar a turma."));
         }
     }
+
+    @PutMapping("/{idTurma}")
+    public ResponseEntity<?> alterandoTurma(@PathVariable("idTurma") int idTurma, @RequestBody Turma turma) {
+        try {
+            return iTurmaService.atualizarTurma(idTurma, turma);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao atualizar a turma."));
+        }
+    }
+
 
     @DeleteMapping("/{idTurma}")
     public ResponseEntity<?> deleteTurma(@PathVariable("idTurma") int idTurma) {
@@ -68,21 +77,6 @@ public class TurmaController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao deletar a Turma."));
-        }
-    }
-
-    @PutMapping("/idTurma")
-    public ResponseEntity<?> atualizarTurma(@PathVariable("idTurma") int idTurma, @RequestBody Turma turma) {
-        try {
-            ResponseEntity<?> resposta = iTurmaService.atualizarTurma(idTurma, turma);
-            if (resposta.getBody() != null) {
-                return resposta;
-            } else {
-                return ResponseEntity.status(resposta.getStatusCode()).body(null);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

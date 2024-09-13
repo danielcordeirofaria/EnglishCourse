@@ -107,7 +107,7 @@ public class AlunosServiceImpl implements IAlunosService {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Profissão do aluno é obrigatória."));
         }
 
-        Turma turma = aluno.getIdTurma();
+        Turma turma = aluno.getTurma();
         if (turma == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma não fornecido."));
         }
@@ -119,7 +119,7 @@ public class AlunosServiceImpl implements IAlunosService {
 
         // Verificar se o professor com o ID fornecido existe
         if (!turmaDAO.existsByIdTurma(idTurma)) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Professor com ID fornecido não encontrado."));
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma com ID fornecido não encontrado."));
         }
         return null;
     }

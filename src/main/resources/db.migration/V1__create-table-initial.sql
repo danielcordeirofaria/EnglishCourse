@@ -52,13 +52,9 @@ CREATE TABLE tbl_alunos
     profissao VARCHAR(255) NOT NULL,
     modulo_feito ENUM('nenhum', 'beginners_1', 'beginners_2', 'elementary_1', 'elementary_2', 'pre_intermediate_1', 'pre_intermediate_2', 'pre_intermediate_plus_1', 'pre_intermediate_plus_2', 'intermediate_1', 'intermediate_2', 'pre_advanced_1', 'pre_advanced_2', 'advanced_1', 'advanced_2', 'advanced_plus_1', 'advanced_plus_2') NOT NULL,
     nivel ENUM('nenhum', 'beginners_1', 'beginners_2', 'elementary_1', 'elementary_2', 'pre_intermediate_1', 'pre_intermediate_2', 'pre_intermediate_plus_1', 'pre_intermediate_plus_2', 'intermediate_1', 'intermediate_2', 'pre_advanced_1', 'pre_advanced_2', 'advanced_1', 'advanced_2', 'advanced_plus_1', 'advanced_plus_2') NOT NULL,
-#     id_professor INT,
-#     nome_professor VARCHAR(255) NOT NULL,
     status ENUM('ATIVADO', 'DESATIVADO') NOT NULL ,
-    id_turma int,
-#     FOREIGN KEY (id_professor) REFERENCES tbl_profs(id_professor),
-#     FOREIGN KEY (nome_professor) REFERENCES tbl_profs(nome_professor),
-    FOREIGN KEY (id_turma) REFERENCES tbl_turmas(id_turma)
+    turma int,
+    FOREIGN KEY (turma) REFERENCES tbl_turmas(id_turma)
 
 );
 

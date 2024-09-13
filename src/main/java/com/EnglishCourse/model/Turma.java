@@ -19,15 +19,11 @@ public class Turma {
     @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
     private Professor professor;
 
-    @OneToMany(mappedBy = "turma", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Horario> horarios;
-
     public Turma() {}
 
-    public Turma(String nomeTurma, Professor professor, List<Horario> horarios) {
+    public Turma(String nomeTurma, Professor professor) {
         this.nomeTurma = nomeTurma;
         this.professor = professor;
-        this.horarios = horarios;
     }
 
     // Getters e setters
@@ -55,11 +51,11 @@ public class Turma {
         this.professor = professor;
     }
 
-    public List<Horario> getHorarios() {
-        return horarios;
-    }
-
-    public void setHorarios(List<Horario> horarios) {
-        this.horarios = horarios;
-    }
+//    public List<Horario> getHorarios() {
+//        return horarios;
+//    }
+//
+//    public void setHorarios(List<Horario> horarios) {
+//        this.horarios = horarios;
+//    }
 }
