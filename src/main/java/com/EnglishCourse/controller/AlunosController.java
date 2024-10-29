@@ -52,11 +52,10 @@ public class AlunosController {
         }
     }
 
-
-
     @GetMapping
     public ResponseEntity<ArrayList<Alunos>> listarAlunos() {
         ArrayList<Alunos> alunos= (ArrayList<Alunos>) iAlunosService.recuperarAlunos();
+
         return ResponseEntity.ok(alunos);
     }
 
@@ -69,6 +68,12 @@ public class AlunosController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @GetMapping("/turma/{idTurma}")
+    public List<Alunos> buscarAlunosPorTurma(@PathVariable int idTurma) {
+        return iAlunosService.buscarAlunosPorTurma(idTurma);
+    }
+
 
     @PutMapping("/{idAlunoMatricula}")
     public ResponseEntity<?> atualizarAluno(@PathVariable("idAlunoMatricula") int idAlunoMatricula, @RequestBody Alunos aluno) {

@@ -1,7 +1,9 @@
 package com.EnglishCourse.controller;
 
 import com.EnglishCourse.DAO.HorarioDAO;
+import com.EnglishCourse.DTO.HorarioDTO;
 import com.EnglishCourse.model.Horario;
+import com.EnglishCourse.model.Turma;
 import com.EnglishCourse.servicos.IHorarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/horario")
@@ -35,6 +38,11 @@ public class HorarioController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/turma/{idTurma}")
+    public ResponseEntity<?> buscarHorariosPorIdTurma(@PathVariable("idTurma") int idTurma) {
+        return iHorarioService.retornarHorariosPeloIdTurma(idTurma);
     }
 
     @PutMapping("/{idHorario}")
@@ -67,6 +75,18 @@ public class HorarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao deletar o Horario."));
         }
     }
+
+    @PostMapping
+    public ResponseEntity<?> inserirHorario(@RequestBody Horario horario) {
+        try {
+            ResponseEntity<?> respostaHorario = iHorarioService.cadastrarNovoHorario(horario);
+            return respostaHorario;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
 
 }
