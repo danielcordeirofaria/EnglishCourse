@@ -13,4 +13,6 @@ public interface IProfessorService  {
     Professor buscarProfessor(int idProfessor);
 
     ResponseEntity<?> atualizarProfessor(int idProfessor, Professor professor);
+
+    boolean deletarProfessor(int idProfessor);
 }

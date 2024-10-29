@@ -23,7 +23,7 @@ public class ProfessorServiceImpl implements IProfessorService{
     @Autowired
     private EnderecoDAO enderecoDAO;
 
-    private static final Logger logger = LoggerFactory.getLogger(AlunosServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProfessorServiceImpl.class);
 
     @Override
     public Object recuperarProfessor() {
@@ -40,7 +40,7 @@ public class ProfessorServiceImpl implements IProfessorService{
         try {
             logger.info("Tentando cadastrar um novo professor: {}", newProfessor);
 
-            if (professorDAO.existsByCpfCnpj(newProfessor.getCpfCnpj())) {
+            if (professorDAO.existsByCpf(newProfessor.getCpf())) {
                 logger.error("CPF ou CNPJ já cadastrado.");
                 return ResponseEntity.badRequest().body(Collections.singletonMap("message", "CPF ou CNPJ já está sendo usado."));
             }
@@ -90,8 +90,8 @@ public class ProfessorServiceImpl implements IProfessorService{
             return "Valor para CEP inválido.";
         }
 
-        if (professor.getCpfCnpj() == null || professor.getCpfCnpj().isEmpty()) {
-            return "CPF/CNPJ do professor é obrigatório.";
+        if (professor.getCpf() == null || professor.getCpf().isEmpty()) {
+            return "CPF do professor é obrigatório.";
         }
         if (professor.getEmail() == null || professor.getEmail().isEmpty()) {
             return "Email do professor é obrigatório.";
@@ -145,7 +145,7 @@ public class ProfessorServiceImpl implements IProfessorService{
 
     private void updateProfessor(Professor professorExistente, Professor professorNovo) {
         professorExistente.setNomeProfessor(professorNovo.getNomeProfessor());
-        professorExistente.setCpfCnpj(professorNovo.getCpfCnpj());
+        professorExistente.setCpf(professorNovo.getCpf());
         professorExistente.setEndereco(professorNovo.getEndereco());
         professorExistente.setEmail(professorNovo.getEmail());
         professorExistente.setLogin(professorNovo.getLogin());
@@ -155,5 +155,14 @@ public class ProfessorServiceImpl implements IProfessorService{
 
     }
 
+    @Override
+    public boolean deletarProfessor(int idProfessor) {
+        if (professorDAO.existsById(idProfessor)) {
+            professorDAO.deleteById(idProfessor);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
