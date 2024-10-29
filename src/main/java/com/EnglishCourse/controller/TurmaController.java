@@ -56,7 +56,9 @@ public class TurmaController {
     @PutMapping("/{idTurma}")
     public ResponseEntity<?> alterandoTurma(@PathVariable("idTurma") int idTurma, @RequestBody Turma turma) {
         try {
+
             return iTurmaService.atualizarTurma(idTurma, turma);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao atualizar a turma."));

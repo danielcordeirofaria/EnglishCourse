@@ -2,11 +2,9 @@ package com.EnglishCourse.servicos;
 
 import com.EnglishCourse.DAO.AlunosDAO;
 import com.EnglishCourse.DAO.EnderecoDAO;
-import com.EnglishCourse.DAO.ProfessorDAO;
 import com.EnglishCourse.DAO.TurmaDAO;
 import com.EnglishCourse.model.Alunos;
 import com.EnglishCourse.model.Endereco;
-import com.EnglishCourse.model.Professor;
 import com.EnglishCourse.model.Turma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AlunosServiceImpl implements IAlunosService {
@@ -180,6 +179,7 @@ public class AlunosServiceImpl implements IAlunosService {
         alunoExistente.setModuloFeito(alunoNovo.getModuloFeito());
         alunoExistente.setNivel(alunoNovo.getNivel());
         alunoExistente.setStatus(alunoNovo.getStatus());
+        alunoExistente.setTurma(alunoNovo.getTurma());
     }
 
     @Override
@@ -207,6 +207,11 @@ public class AlunosServiceImpl implements IAlunosService {
     }
 
     @Override
+    public List<Alunos> buscarAlunosPorTurma(int idTurma) {
+        return alunosDAO.findByTurmaIdTurma(idTurma);
+    }
+
+    @Override
     public ResponseEntity<?> deletarAluno(int idAlunos) {
         try {
             Alunos alunoExistente = alunosDAO.findById(idAlunos).orElse(null);
@@ -224,6 +229,7 @@ public class AlunosServiceImpl implements IAlunosService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao excluir o aluno."));
         }
     }
+
 
 
 }

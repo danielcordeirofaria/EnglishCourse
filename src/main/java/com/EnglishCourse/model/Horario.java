@@ -18,7 +18,7 @@ public class Horario {
 
     @Column(name = "dia_semana", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
-    private DiaSemana diaSemana;
+    private DiaDaSemanaEnum diaSemana;
 
     @Column(name = "horario_inicio", nullable = false)
     private LocalTime horarioInicio;
@@ -26,7 +26,7 @@ public class Horario {
     @Column(name = "horario_fim", nullable = false)
     private LocalTime horarioFim;
 
-    public Horario(Turma turma, DiaSemana diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
+    public Horario(Turma turma, DiaDaSemanaEnum diaSemana, LocalTime horarioInicio, LocalTime horarioFim) {
         this.turma = turma;
         this.diaSemana = diaSemana;
         this.horarioInicio = horarioInicio;
@@ -52,11 +52,11 @@ public class Horario {
         this.turma = turma;
     }
 
-    public DiaSemana getDiaSemana() {
+    public DiaDaSemanaEnum getDiaSemana() {
         return diaSemana;
     }
 
-    public void setDiaSemana(DiaSemana diaSemana) {
+    public void setDiaSemana(DiaDaSemanaEnum diaSemana) {
         this.diaSemana = diaSemana;
     }
 

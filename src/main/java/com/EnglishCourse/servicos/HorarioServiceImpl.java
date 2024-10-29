@@ -1,6 +1,8 @@
 package com.EnglishCourse.servicos;
 
 import com.EnglishCourse.DAO.HorarioDAO;
+import com.EnglishCourse.DAO.TurmaDAO;
+import com.EnglishCourse.DTO.HorarioDTO;
 import com.EnglishCourse.model.Horario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HorarioServiceImpl implements IHorarioService{
@@ -19,6 +24,8 @@ public class HorarioServiceImpl implements IHorarioService{
     private HorarioDAO horarioDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(HorarioServiceImpl.class);
+    @Autowired
+    private TurmaDAO turmaDAO;
 
     @Override
     public ResponseEntity<?> atualizarHorario(int idHorario, Horario horario) {
@@ -63,4 +70,59 @@ public class HorarioServiceImpl implements IHorarioService{
             return false;
         }
     }
+
+    @Override
+    public ResponseEntity<?> cadastrarNovoHorario(Horario newHorario) {
+        try {
+            logger.info("Tentando cadastrar um novo horario: {}", newHorario);
+            if( !turmaDAO.existsById(newHorario.getTurma().getIdTurma())){
+                logger.error("Turma não encontrada.");
+                return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma não encontrada."));
+            }
+            switch (newHorario.getDiaSemana()) {
+                case SEGUNDA:
+                case TERCA:
+                case QUARTA:
+                case QUINTA:
+                case SEXTA:
+                case SABADO:
+                case DOMINGO:
+                    // Dia da semana válido, continue o processamento
+                    break;
+                default:
+                    logger.error("Dia da semana não encontrado");
+                    return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Dia da semana não encontrado."));
+            }
+
+            horarioDAO.save(newHorario);
+            return ResponseEntity.ok(newHorario);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar o horário");
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<List<HorarioDTO>> retornarHorariosPeloIdTurma(int idTurma) {
+        List<Horario> horarios = horarioDAO.findByTurma_IdTurma(idTurma);
+
+        // Mapeamento de Horario para HorarioDTO
+        List<HorarioDTO> horarioDTOs = horarios.stream().map(horario ->
+                new HorarioDTO(
+                        horario.getIdHorario(),
+                        horario.getTurma().getIdTurma(),
+                        horario.getTurma().getNomeTurma(),
+                        horario.getTurma().getProfessor().getIdProfessor(),
+                        horario.getTurma().getProfessor().getNomeProfessor(),
+                        horario.getDiaSemana().name(),  // Se o enum for convertido para string
+                        horario.getHorarioInicio().toString(),
+                        horario.getHorarioFim().toString()
+                )
+        ).collect(Collectors.toList());
+
+        return ResponseEntity.ok(horarioDTOs);
+    }
+
+
 }
