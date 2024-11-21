@@ -40,7 +40,7 @@ public class TurmaServiceImpl implements ITurmaService {
                 ProfessorDTO professorDTO = null;
 
                 if (professor != null) {
-                    professorDTO = new ProfessorDTO(professor.getIdProfessor(), professor.getNomeProfessor(), professor.getWhatsapp());
+                    professorDTO = new ProfessorDTO(professor.getIdProfessor(), professor.getNome(), professor.getWhatsapp());
                 }
 
                 return new TurmaDTO(turma.getIdTurma(), turma.getNomeTurma(), professorDTO);
@@ -60,7 +60,7 @@ public class TurmaServiceImpl implements ITurmaService {
                 ProfessorDTO professorDTO = null;
 
                 if (professor != null) {
-                    professorDTO = new ProfessorDTO(professor.getIdProfessor(), professor.getNomeProfessor(), professor.getWhatsapp());
+                    professorDTO = new ProfessorDTO(professor.getIdProfessor(), professor.getNome(), professor.getWhatsapp());
                 }
 
                 return new TurmaDTO(turma.getIdTurma(), turma.getNomeTurma(), professorDTO);

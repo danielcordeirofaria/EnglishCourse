@@ -5,28 +5,15 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "tbl_alunos")
-public class Alunos {
+public class Alunos extends Pessoas{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_aluno_matricula")
     private int idAlunoMatricula;
 
-    @Column(name = "nome", length = 255, nullable = false)
-    private String nome;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_endereco", referencedColumnName = "id_endereco")
-    private Endereco endereco;
-
     @Column(name = "data_de_nascimento", nullable = false)
     private LocalDate dataDeNascimento;
-
-    @Column(name = "cpf", length = 14, unique = true, nullable = false)
-    private String cpf;
-
-    @Column(name = "email", length = 255, nullable = false)
-    private String email;
 
     @Column(name = "formacao", length = 255, nullable = false)
     private String formacao;
@@ -42,10 +29,6 @@ public class Alunos {
     @Enumerated(EnumType.STRING)
     private NivelEnum nivel;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "id_professor", referencedColumnName = "id_professor", nullable = false)
-//    private Professor idProfessor;
-
     @Column(name = "status", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
@@ -54,21 +37,43 @@ public class Alunos {
     @JoinColumn(name = "id_turma", referencedColumnName = "id_turma", nullable = true)
     private Turma turma;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id_responsavel", referencedColumnName = "id_responsavel", nullable = true)
+    private Responsavel responsavel;
 
-    public Alunos() {}
-
-    public Alunos(String nome, Endereco endereco, LocalDate dataDeNascimento, String cpf, String email, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, Turma turma) {
-        this.nome = nome;
-        this.endereco = endereco;
+    public Alunos(String nome, String cpf, Endereco endereco, String email, String whatsapp, LocalDate dataDeNascimento, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, StatusEnum status, Turma turma, Responsavel responsavel) {
+        super(nome, cpf, endereco, email, whatsapp);
         this.dataDeNascimento = dataDeNascimento;
-        this.cpf = cpf;
-        this.email = email;
         this.formacao = formacao;
         this.profissao = profissao;
         this.moduloFeito = moduloFeito;
         this.nivel = nivel;
+        this.status = status;
         this.turma = turma;
+        this.responsavel = responsavel;
     }
+
+    public Alunos(String nome, String cpf, Endereco endereco, String email, String whatsapp, LocalDate dataDeNascimento, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, StatusEnum status) {
+        super(nome, cpf, endereco, email, whatsapp);
+        this.dataDeNascimento = dataDeNascimento;
+        this.formacao = formacao;
+        this.profissao = profissao;
+        this.moduloFeito = moduloFeito;
+        this.nivel = nivel;
+        this.status = status;
+    }
+
+    public Alunos(String nome, String cpf, Endereco endereco, String email, String whatsapp, LocalDate dataDeNascimento, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel) {
+        super(nome, cpf, endereco, email, whatsapp);
+        this.dataDeNascimento = dataDeNascimento;
+        this.formacao = formacao;
+        this.profissao = profissao;
+        this.moduloFeito = moduloFeito;
+        this.nivel = nivel;
+    }
+
+    public Alunos() {}
+
 
     // Getters e setters
     public int getIdAlunoMatricula() {
@@ -79,21 +84,6 @@ public class Alunos {
         this.idAlunoMatricula = idAlunoMatricula;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
-    }
 
     public LocalDate getDataDeNascimento() {
         return dataDeNascimento;
@@ -101,22 +91,6 @@ public class Alunos {
 
     public void setDataDeNascimento(LocalDate dataDeNascimento) {
         this.dataDeNascimento = dataDeNascimento;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFormacao() {
@@ -161,5 +135,13 @@ public class Alunos {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+
+    public Responsavel getResponsavel() {
+        return responsavel;
+    }
+
+    public void setResponsavel(Responsavel responsavel) {
+        this.responsavel = responsavel;
     }
 }

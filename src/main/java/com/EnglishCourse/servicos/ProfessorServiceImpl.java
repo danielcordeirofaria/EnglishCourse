@@ -2,7 +2,6 @@ package com.EnglishCourse.servicos;
 
 import com.EnglishCourse.DAO.EnderecoDAO;
 import com.EnglishCourse.DAO.ProfessorDAO;
-import com.EnglishCourse.model.Alunos;
 import com.EnglishCourse.model.Endereco;
 import com.EnglishCourse.model.Professor;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ProfessorServiceImpl implements IProfessorService{
@@ -26,12 +26,12 @@ public class ProfessorServiceImpl implements IProfessorService{
     private static final Logger logger = LoggerFactory.getLogger(ProfessorServiceImpl.class);
 
     @Override
-    public Object recuperarProfessor() {
+    public List<Professor> recuperarProfessor() {
         try {
-            return professorDAO.findAll();
+            return (List<Professor>) professorDAO.findAll();
         } catch (Exception e) {
             logger.error("Ocorreu um erro ao recuperar os professores.", e);
-            return Collections.singletonMap("message", "Ocorreu um erro ao recuperar os professores.");
+            return Collections.emptyList(); // Retorna uma lista vazia em caso de erro
         }
     }
 
@@ -63,7 +63,7 @@ public class ProfessorServiceImpl implements IProfessorService{
     }
 
     private String validateProfessor(Professor professor) {
-        if (professor.getNomeProfessor() == null || professor.getNomeProfessor().isEmpty()) {
+        if (professor.getNome() == null || professor.getNome().isEmpty()) {
             return "Nome do professor é obrigatório.";
         }
 
@@ -144,7 +144,7 @@ public class ProfessorServiceImpl implements IProfessorService{
         }
 
     private void updateProfessor(Professor professorExistente, Professor professorNovo) {
-        professorExistente.setNomeProfessor(professorNovo.getNomeProfessor());
+        professorExistente.setNome(professorNovo.getNome());
         professorExistente.setCpf(professorNovo.getCpf());
         professorExistente.setEndereco(professorNovo.getEndereco());
         professorExistente.setEmail(professorNovo.getEmail());

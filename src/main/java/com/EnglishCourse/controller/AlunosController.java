@@ -19,14 +19,24 @@ public class AlunosController {
     @Autowired
     private IAlunosService iAlunosService;
 
-    @PostMapping
-    public ResponseEntity<?> cadastrarAlunos(@RequestBody Alunos aluno) {
-        try {
-            ResponseEntity<?> resposta = iAlunosService.salvarAluno(aluno);
 
-            return resposta; // Retorna a resposta do serviço diretamente
+    @PostMapping
+    public ResponseEntity<Object> cadastrarAlunos(@RequestBody Alunos aluno) {
+        try {
+            System.out.println("Tentando cadastrar aluno");
+            ResponseEntity<?> resposta = iAlunosService.salvarAluno(aluno);
+            System.out.println(resposta);
+            System.out.println("Aluno enviado para save");
+
+            // Verifica se a resposta não é nula antes de acessar o status code
+            if (resposta != null) {
+                System.out.println("resposta!=null");
+                return ResponseEntity.status(resposta.getStatusCode()).body(Collections.singletonMap("message", "Aluno cadastrado com sucesso."));
+            } else {
+                // Trata o caso em que a resposta é nula
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar o aluno."));
+            }
         } catch (Exception e) {
-            // Log da exceção para fins de depuração
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar o aluno."));
         }
