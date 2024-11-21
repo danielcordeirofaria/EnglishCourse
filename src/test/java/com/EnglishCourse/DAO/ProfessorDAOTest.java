@@ -26,7 +26,7 @@ class ProfessorDAOTest {
     EntityManager entityManager;
 
     @Test
-    @DisplayName("Should verify if Professor exist from DB")
+    @DisplayName("Should return true when professor with ID exists")
     void existsByIdProfessorCase1() {
         Endereco enderecoProfessor = new Endereco("Rua dos Professores", "456", null, "Bairro dos Educadores", "Cidade do Saber", "Estado do Conhecimento", "87654321");
         entityManager.persist(enderecoProfessor);
@@ -34,7 +34,11 @@ class ProfessorDAOTest {
         Professor professor = new Professor("Professor Nome", "99988877766", enderecoProfessor, "professor@email.com", "41999998888", "loginProfessor", "41995233589", RolesEnum.PROF);
         entityManager.persist(professor);
 
-        Boolean professorLocalizado = professorDAO.existsByIdProfessor(1);
+        // Obter o ID do professor
+        Integer idProfessor = professor.getIdProfessor();
+
+        // Usar o ID correto na chamada do método existsByIdProfessor
+        Boolean professorLocalizado = professorDAO.existsByIdProfessor(idProfessor);
 
         assertThat(professorLocalizado).isTrue();
     }
@@ -49,21 +53,22 @@ class ProfessorDAOTest {
     }
 
     @Test
-    @DisplayName("Should get Professor successfully from DB")
+    @DisplayName("Should return true when professor with CPF exists")
     void existsByCpfCase1() {
-
+        // Criação do endereço
         String cpf = "12345678912";
-
         Endereco enderecoProfessor = new Endereco("Rua dos Professores", "456", null, "Bairro dos Educadores", "Cidade do Saber", "Estado do Conhecimento", "87654321");
         entityManager.persist(enderecoProfessor);
 
+        // Criação do professor
         Professor professor = new Professor("Professor Nome", cpf, enderecoProfessor, "professor@email.com", "41999998888", "loginProfessor", "41995233589", RolesEnum.PROF);
         entityManager.persist(professor);
 
+        // Chamada do método existsByCpf
         boolean existentProfessor = professorDAO.existsByCpf(cpf);
 
+        // Asserção
         assertThat(existentProfessor).isTrue();
-
     }
 
     @Test

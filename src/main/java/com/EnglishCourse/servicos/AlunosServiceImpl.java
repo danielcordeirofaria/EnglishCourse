@@ -135,7 +135,7 @@ public class AlunosServiceImpl implements IAlunosService {
             System.out.println("aluno savo" + savedAluno);
             logger.info("Aluno cadastrado com sucesso: {}", savedAluno);
 
-            return ResponseEntity.status(HttpStatus.CREATED)
+            return ResponseEntity.status(HttpStatus.OK)
                     .body(Collections.singletonMap("message", "Aluno cadastrado com sucesso."));
 
         } catch (DataAccessException e) {

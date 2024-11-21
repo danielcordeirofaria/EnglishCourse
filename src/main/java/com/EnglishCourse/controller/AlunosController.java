@@ -63,10 +63,14 @@ public class AlunosController {
     }
 
     @GetMapping
-    public ResponseEntity<ArrayList<Alunos>> listarAlunos() {
-        ArrayList<Alunos> alunos= (ArrayList<Alunos>) iAlunosService.recuperarAlunos();
-
-        return ResponseEntity.ok(alunos);
+    public ResponseEntity<List<Alunos>> listarAlunos() {
+        try {
+            List<Alunos> alunos = (List<Alunos>) iAlunosService.recuperarAlunos();
+            return ResponseEntity.ok(alunos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.emptyList());
+        }
     }
 
     @GetMapping("/{idAlunoMatricula}")

@@ -1,15 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.EnglishCourse.DAO.TurmaDAOTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.081 s <<< FAILURE! -- in com.EnglishCourse.DAO.TurmaDAOTest
-com.EnglishCourse.DAO.TurmaDAOTest.existsByIdTurmaCase1 -- Time elapsed: 0.024 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: 
-
-Expecting value to be true but was false
-	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
-	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
-	at com.EnglishCourse.DAO.TurmaDAOTest.existsByIdTurmaCase1(TurmaDAOTest.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in com.EnglishCourse.DAO.TurmaDAOTest
