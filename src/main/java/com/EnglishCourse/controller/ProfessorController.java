@@ -47,11 +47,12 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity<List<Professor>> listarProfessor() {
         try {
-            List<Professor> professores = (List<Professor>) iProfessorService.recuperarProfessor();
+            List<Professor> professores = iProfessorService.recuperarProfessor();
             return ResponseEntity.ok(professores);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(new Professor()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+
         }
     }
 

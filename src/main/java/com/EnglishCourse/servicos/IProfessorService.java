@@ -1,12 +1,13 @@
 package com.EnglishCourse.servicos;
 
-import com.EnglishCourse.model.Alunos;
 import com.EnglishCourse.model.Professor;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface IProfessorService  {
 
-    Object recuperarProfessor();
+    List<Professor> recuperarProfessor();
 
     ResponseEntity<?> salvarProfessor(Professor professor);
 

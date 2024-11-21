@@ -114,7 +114,7 @@ public class HorarioServiceImpl implements IHorarioService{
                         horario.getTurma().getIdTurma(),
                         horario.getTurma().getNomeTurma(),
                         horario.getTurma().getProfessor().getIdProfessor(),
-                        horario.getTurma().getProfessor().getNomeProfessor(),
+                        horario.getTurma().getProfessor().getNome(),
                         horario.getDiaSemana().name(),  // Se o enum for convertido para string
                         horario.getHorarioInicio().toString(),
                         horario.getHorarioFim().toString()

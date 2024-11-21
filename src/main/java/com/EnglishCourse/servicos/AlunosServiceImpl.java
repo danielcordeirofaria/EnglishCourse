@@ -2,11 +2,13 @@ package com.EnglishCourse.servicos;
 
 import com.EnglishCourse.DAO.AlunosDAO;
 import com.EnglishCourse.DAO.EnderecoDAO;
+import com.EnglishCourse.DAO.ResponsavelDAO;
 import com.EnglishCourse.DAO.TurmaDAO;
 import com.EnglishCourse.model.Alunos;
 import com.EnglishCourse.model.Endereco;
-import com.EnglishCourse.model.Turma;
+import com.EnglishCourse.model.Responsavel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,99 +30,170 @@ public class AlunosServiceImpl implements IAlunosService {
     @Autowired
     private TurmaDAO turmaDAO;
 
+    @Autowired
+    private ResponsavelDAO responsavelDAO;
+
     private static final Logger logger = LoggerFactory.getLogger(AlunosServiceImpl.class);
 
     @Override
-    public ResponseEntity<?> salvarAluno(Alunos newAluno) {
-        try {
-            logger.info("Tentando cadastrar um novo aluno: {}", newAluno);
+    public ResponseEntity<Object> salvarAluno(Alunos newAluno) {
+        logger.info("Tentando cadastrar um novo aluno: {}", newAluno);
 
+        // Validação de CPF
+        if (newAluno.getCpf() == null || newAluno.getCpf().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "CPF do aluno é obrigatório."));
+        }
+        try {
             if (alunosDAO.existsByCpf(newAluno.getCpf())) {
                 logger.error("CPF já cadastrado.");
                 return ResponseEntity.badRequest().body(Collections.singletonMap("message", "CPF já está sendo usado."));
             }
+        } catch (DataAccessException e) {
+            logger.error("Erro ao acessar o banco de dados para verificar CPF", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Erro ao acessar o banco de dados"));
+        }
 
-            ResponseEntity<?> validationResponse = validateAluno(newAluno);
-            if (validationResponse != null) {
-                return validationResponse;
+        // Validação da turma (se existir)
+        if (newAluno.getTurma() != null) {
+            int idTurma = newAluno.getTurma().getIdTurma();
+            try {
+                if (idTurma <= 0 || !turmaDAO.existsByIdTurma(idTurma)) {
+                    return ResponseEntity.badRequest().body(Collections.singletonMap("message", "ID da turma inválido ou turma não encontrada."));
+                }
+            } catch (DataAccessException e) {
+                logger.error("Erro ao acessar o banco de dados para verificar turma", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Collections.singletonMap("message", "Erro ao acessar o banco de dados"));
+            }
+        }
+
+        // Validações do aluno
+        if (newAluno.getNome() == null || newAluno.getNome().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Nome do aluno é obrigatório."));
+        }
+
+        Endereco endereco = newAluno.getEndereco();
+        if (endereco == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Endereço do aluno é obrigatório."));
+        }
+        if (endereco.getLogradouro() == null || endereco.getLogradouro().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Logradouro inválido."));
+        }
+        if (endereco.getNumero() == null || endereco.getNumero().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira um valor para o número. Caso não tenha, envie S/A."));
+        }
+        if (endereco.getBairro() == null || endereco.getBairro().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Valor para bairro inválido."));
+        }
+        if (endereco.getCidade() == null || endereco.getCidade().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira a Cidade do aluno."));
+        }
+        if (endereco.getEstado() == null || endereco.getEstado().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira o Estado do aluno."));
+        }
+        if (endereco.getCep() == null || endereco.getCep().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Valor para CEP inválido."));
+        }
+
+        if (newAluno.getDataDeNascimento() == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Data de nascimento do aluno é obrigatória."));
+        }
+        if (newAluno.getEmail() == null || newAluno.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email do aluno é obrigatório."));
+        }
+        if (newAluno.getFormacao() == null || newAluno.getFormacao().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Formação do aluno é obrigatória."));
+        }
+        if (newAluno.getModuloFeito() == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Módulo feito pelo aluno é obrigatório."));
+        }
+        if (newAluno.getNivel() == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Nível do aluno é obrigatório."));
+        }
+        if (newAluno.getProfissao() == null || newAluno.getProfissao().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Profissão do aluno é obrigatória."));
+        }
+
+        try {
+            // Salvando o endereço
+            enderecoDAO.save(endereco);
+
+            // Salvando o responsável (se existir)
+            if (newAluno.getResponsavel() != null) {
+                Responsavel responsavel = newAluno.getResponsavel();
+                Responsavel responsavelExistente = responsavelDAO.findByCpf(responsavel.getCpf());
+                if (responsavelExistente != null) {
+                    newAluno.setResponsavel(responsavelExistente);
+                } else {
+                    responsavelDAO.save(responsavel);
+                }
             }
 
-            enderecoDAO.save(newAluno.getEndereco());
+            // Salvando o aluno
             Alunos savedAluno = alunosDAO.save(newAluno);
-            logger.info("Aluno cadastrado com sucesso");
+            System.out.println("aluno savo" + savedAluno);
+            logger.info("Aluno cadastrado com sucesso: {}", savedAluno);
 
-            return ResponseEntity.ok(Collections.singletonMap("message", "Aluno cadastrado com sucesso.")); // Retorna a mensagem de sucesso
-        } catch (Exception e) {
-            logger.error("Ocorreu um erro ao cadastrar o aluno.", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar o aluno."));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Collections.singletonMap("message", "Aluno cadastrado com sucesso."));
+
+        } catch (DataAccessException e) {
+            logger.error("Erro ao salvar aluno", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Erro ao salvar aluno"));
         }
     }
 
-    private ResponseEntity<?> validateAluno(Alunos aluno) {
+    private void validateAluno(Alunos aluno) throws IllegalArgumentException {
         if (aluno.getNome() == null || aluno.getNome().isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Nome do aluno é obrigatório."));
+            throw new IllegalArgumentException("Nome do aluno é obrigatório.");
         }
 
         Endereco endereco = aluno.getEndereco();
         if (endereco == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Endereço do aluno é obrigatório."));
+            throw new IllegalArgumentException("Endereço do aluno é obrigatório.");
         }
         if (endereco.getLogradouro() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Logradouro inválido."));
+            throw new IllegalArgumentException("Logradouro inválido.");
         }
         if (endereco.getNumero() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira um valor para o número. Caso não tenha, envie S/A."));
+            throw new IllegalArgumentException("Insira um valor para o número. Caso não tenha, envie S/A.");
         }
         if (endereco.getBairro() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Valor para bairro inválido."));
+            throw new IllegalArgumentException("Valor para bairro inválido.");
         }
         if (endereco.getCidade() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira a Cidade do aluno."));
+            throw new IllegalArgumentException("Insira a Cidade do aluno.");
         }
         if (endereco.getEstado() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Insira o Estado do aluno."));
+            throw new IllegalArgumentException("Insira o Estado do aluno.");
         }
         if (endereco.getCep() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Valor para CEP inválido."));
+            throw new IllegalArgumentException("Valor para CEP inválido.");
         }
 
         if (aluno.getDataDeNascimento() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Data de nascimento do aluno é obrigatória."));
+            throw new IllegalArgumentException("Data de nascimento do aluno é obrigatória.");
         }
         if (aluno.getCpf() == null || aluno.getCpf().isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "CPF do aluno é obrigatório."));
+            throw new IllegalArgumentException("CPF do aluno é obrigatório.");
         }
         if (aluno.getEmail() == null || aluno.getEmail().isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email do aluno é obrigatório."));
+            throw new IllegalArgumentException("Email do aluno é obrigatório.");
         }
         if (aluno.getFormacao() == null || aluno.getFormacao().isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Formação do aluno é obrigatória."));
+            throw new IllegalArgumentException("Formação do aluno é obrigatória.");
         }
         if (aluno.getModuloFeito() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Módulo feito pelo aluno é obrigatório."));
+            throw new IllegalArgumentException("Módulo feito pelo aluno é obrigatório.");
         }
         if (aluno.getNivel() == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Nível do aluno é obrigatório."));
+            throw new IllegalArgumentException("Nível do aluno é obrigatório.");
         }
         if (aluno.getProfissao() == null || aluno.getProfissao().isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Profissão do aluno é obrigatória."));
+            throw new IllegalArgumentException("Profissão do aluno é obrigatória.");
         }
-
-        Turma turma = aluno.getTurma();
-        if (turma == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma não fornecido."));
-        }
-
-        int idTurma = turma.getIdTurma();
-        if (idTurma <= 0) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "ID da turma não fornecido ou inválido."));
-        }
-
-        // Verificar se o professor com o ID fornecido existe
-        if (!turmaDAO.existsByIdTurma(idTurma)) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Turma com ID fornecido não encontrado."));
-        }
-        return null;
     }
 
     @Override
@@ -129,9 +202,11 @@ public class AlunosServiceImpl implements IAlunosService {
             return alunosDAO.findAll();
         } catch (Exception e) {
             logger.error("Ocorreu um erro ao recuperar os alunos.", e);
-            return Collections.singletonMap("message", "Ocorreu um erro ao recuperar os alunos.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Ocorreu um erro ao recuperar os alunos."));
         }
     }
+
 
     @Override
     public Alunos buscarAluno(int idAlunos) {
@@ -169,7 +244,7 @@ public class AlunosServiceImpl implements IAlunosService {
 
 
 
-    private void updateAluno(Alunos alunoExistente, Alunos alunoNovo) {
+    public void updateAluno(Alunos alunoExistente, Alunos alunoNovo) {
         alunoExistente.setNome(alunoNovo.getNome());
         alunoExistente.setEndereco(alunoNovo.getEndereco());
         alunoExistente.setDataDeNascimento(alunoNovo.getDataDeNascimento());
@@ -180,6 +255,7 @@ public class AlunosServiceImpl implements IAlunosService {
         alunoExistente.setNivel(alunoNovo.getNivel());
         alunoExistente.setStatus(alunoNovo.getStatus());
         alunoExistente.setTurma(alunoNovo.getTurma());
+        alunoExistente.setResponsavel(alunoNovo.getResponsavel());
     }
 
     @Override
@@ -229,7 +305,5 @@ public class AlunosServiceImpl implements IAlunosService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao excluir o aluno."));
         }
     }
-
-
 
 }

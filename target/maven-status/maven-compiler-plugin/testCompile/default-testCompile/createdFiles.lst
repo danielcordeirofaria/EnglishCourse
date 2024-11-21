@@ -1,1 +1,10 @@
+com\EnglishCourse\DAO\ProfessorDAOTest.class
+com\EnglishCourse\DAO\TurmaDAOTest.class
 com\EnglishCourse\EnglishCourseApplicationTests.class
+com\EnglishCourse\servicos\HorarioServiceImplTest.class
+com\EnglishCourse\DAO\HorarioDAOTest.class
+com\EnglishCourse\DAO\ResponsavelDAOTest.class
+com\EnglishCourse\controller\AlunosControllerTest.class
+com\EnglishCourse\DAO\AlunosDAOTest.class
+com\EnglishCourse\DAO\EnderecoDAOTest.class
+com\EnglishCourse\servicos\AlunosServiceImplTest.class
