@@ -7,9 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,13 +26,13 @@ public class AlunosController {
             System.out.println(resposta);
             System.out.println("Aluno enviado para save");
 
-            // Verifica se a resposta não é nula antes de acessar o status code
-            if (resposta != null) {
-                System.out.println("resposta!=null");
+            if (resposta.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.status(resposta.getStatusCode()).body(Collections.singletonMap("message", "Aluno cadastrado com sucesso."));
             } else {
-                // Trata o caso em que a resposta é nula
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Ocorreu um erro ao cadastrar o aluno."));
+                // Acessa a mensagem de erro do SingletonMap
+                Map<String, String> body = (Map<String, String>) resposta.getBody();
+                String mensagemErro = body.get("message");
+                return ResponseEntity.status(resposta.getStatusCode()).body(Collections.singletonMap("message", mensagemErro));
             }
         } catch (Exception e) {
             e.printStackTrace();

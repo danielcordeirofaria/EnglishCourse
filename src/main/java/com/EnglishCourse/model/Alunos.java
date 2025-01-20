@@ -37,8 +37,8 @@ public class Alunos extends Pessoas{
     @JoinColumn(name = "id_turma", referencedColumnName = "id_turma", nullable = true)
     private Turma turma;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_responsavel", referencedColumnName = "id_responsavel", nullable = true)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_responsavel", referencedColumnName = "id_responsavel")
     private Responsavel responsavel;
 
     public Alunos(String nome, String cpf, Endereco endereco, String email, String whatsapp, LocalDate dataDeNascimento, String formacao, String profissao, NivelEnum moduloFeito, NivelEnum nivel, StatusEnum status, Turma turma, Responsavel responsavel) {
